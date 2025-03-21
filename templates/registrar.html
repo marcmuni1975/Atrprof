@@ -8,6 +8,16 @@
                 <h5 class="mb-0">Registrar Atraso</h5>
             </div>
             <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
                 <form method="POST">
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del Profesor</label>
@@ -19,7 +29,9 @@
                                 {% endfor %}
                                 <option value="nuevo">+ Nuevo Profesor</option>
                             </select>
-                            <input type="text" id="nuevo_nombre" name="nuevo_nombre" class="form-control mt-2" style="display: none;" placeholder="Nombre del nuevo profesor">
+                            <input type="text" id="nuevo_nombre" name="nuevo_nombre" 
+                                   class="form-control mt-2" style="display: none;" 
+                                   placeholder="Nombre del nuevo profesor">
                         {% else %}
                             <input type="text" name="nombre" class="form-control" required>
                         {% endif %}
@@ -62,6 +74,7 @@ document.getElementById('nombre').addEventListener('change', function() {
     if (this.value === 'nuevo') {
         nuevoNombreInput.style.display = 'block';
         nuevoNombreInput.required = true;
+        nuevoNombreInput.focus();
     } else {
         nuevoNombreInput.style.display = 'none';
         nuevoNombreInput.required = false;
