@@ -30,7 +30,7 @@ class AtrasosApp:
                  background=[('selected', '#1f6aa5')])
 
         # Lista de profesores y atrasos
-        self.profesores = []
+        self.profesores = set()
         self.atrasos = []
 
         # Crear interfaz
@@ -65,6 +65,16 @@ class AtrasosApp:
                                           font=ctk.CTkFont(size=14))
         reporte_profesor_btn.pack(side=tk.LEFT, padx=10)
 
+        # Botón de reinicio
+        self.btn_reiniciar = ctk.CTkButton(
+            main_frame,
+            text="Reiniciar Registros",
+            fg_color="#FF4444",
+            hover_color="#CC0000",
+            command=self.confirmar_reinicio
+        )
+        self.btn_reiniciar.pack(pady=10, padx=20, side="top", anchor="e")
+
         # Tabla de atrasos
         self.tree = ttk.Treeview(main_frame, columns=("Nombre", "Fecha", "Horario Programado", "Horario Real", "Atraso"),
                                 show="headings", style="Treeview")
@@ -93,7 +103,7 @@ class AtrasosApp:
         # Combobox para profesores
         nombre_var = tk.StringVar()
         nombre_combo = ttk.Combobox(form_frame, textvariable=nombre_var,
-                                  values=self.profesores + ["Nuevo Profesor"])
+                                  values=list(self.profesores) + ["Nuevo Profesor"])
         nombre_combo.pack(pady=5)
 
         # Campo para nuevo profesor
@@ -187,7 +197,7 @@ class AtrasosApp:
 
             # Agregar profesor si no existe
             if nombre not in self.profesores:
-                self.profesores.append(nombre)
+                self.profesores.add(nombre)
 
             # Actualizar tabla
             self.tree.insert("", tk.END, values=(nombre, fecha, horario_programado, horario_real, atraso))
@@ -196,6 +206,23 @@ class AtrasosApp:
             window.destroy()
         except ValueError:
             messagebox.showerror("Error", "Formato de fecha u hora incorrecto.")
+
+    def confirmar_reinicio(self):
+        respuesta = messagebox.askyesno(
+            "Confirmar Reinicio",
+            "¿Está seguro que desea reiniciar todos los registros?\nEsta acción no se puede deshacer.",
+            icon='warning'
+        )
+        if respuesta:
+            self.reiniciar_registros()
+
+    def reiniciar_registros(self):
+        self.atrasos = []
+        self.profesores = set()
+        # Limpiar la tabla
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        messagebox.showinfo("Éxito", "Todos los registros han sido eliminados.")
 
     def mostrar_reporte(self):
         # Ventana para mostrar el reporte general
@@ -260,7 +287,7 @@ class AtrasosApp:
         # Combobox para profesores
         profesor_var = tk.StringVar()
         profesor_combo = ttk.Combobox(select_frame, textvariable=profesor_var,
-                                    values=self.profesores)
+                                    values=list(self.profesores))
         profesor_combo.pack(pady=10)
 
         def generar_reporte():

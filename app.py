@@ -109,22 +109,64 @@ def reporte_profesor(nombre):
 def reporte_general():
     profesores, atrasos = cargar_datos()
     
-    # Calcular total
-    total_horas = 0
-    total_minutos = 0
+    # Calcular totales por profesor
+    totales_por_profesor = {}
+    for profesor in profesores:
+        atrasos_profesor = [a for a in atrasos if a['nombre'] == profesor]
+        total_horas = 0
+        total_minutos = 0
+        
+        for atraso in atrasos_profesor:
+            horas = int(atraso['atraso'].split('h')[0])
+            minutos = int(atraso['atraso'].split('h')[1].split('m')[0])
+            total_horas += horas
+            total_minutos += minutos
+        
+        # Ajustar minutos que exceden 60
+        total_horas += total_minutos // 60
+        total_minutos = total_minutos % 60
+        
+        totales_por_profesor[profesor] = {
+            'atrasos': atrasos_profesor,
+            'total': f'{total_horas}h {total_minutos}m',
+            'total_numerico': total_horas * 60 + total_minutos  # Para ordenar
+        }
     
+    # Ordenar profesores por total de atraso (descendente)
+    profesores_ordenados = sorted(
+        totales_por_profesor.keys(),
+        key=lambda x: totales_por_profesor[x]['total_numerico'],
+        reverse=True
+    )
+    
+    # Calcular total general
+    total_general_horas = 0
+    total_general_minutos = 0
     for atraso in atrasos:
         horas = int(atraso['atraso'].split('h')[0])
         minutos = int(atraso['atraso'].split('h')[1].split('m')[0])
-        total_horas += horas
-        total_minutos += minutos
+        total_general_horas += horas
+        total_general_minutos += minutos
 
-    total_horas += total_minutos // 60
-    total_minutos = total_minutos % 60
+    total_general_horas += total_general_minutos // 60
+    total_general_minutos = total_general_minutos % 60
     
     return render_template('reporte_general.html',
-                         atrasos=atrasos,
-                         total=f'{total_horas}h {total_minutos}m')
+                         profesores_ordenados=profesores_ordenados,
+                         totales_por_profesor=totales_por_profesor,
+                         total_general=f'{total_general_horas}h {total_general_minutos}m')
+
+@app.route('/reiniciar', methods=['POST'])
+def reiniciar():
+    try:
+        # Reiniciar los archivos de datos
+        with open(ATRASOS_FILE, 'w') as f:
+            f.write('[]')
+        with open(PROFESORES_FILE, 'w') as f:
+            f.write('[]')
+        return redirect(url_for('index'))
+    except Exception as e:
+        return f"Error al reiniciar los datos: {str(e)}"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

@@ -3,55 +3,66 @@
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Reporte General de Atrasos</h5>
-                <a href="{{ url_for('index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Volver
-                </a>
+                <div>
+                    <button class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#confirmarReinicioModal">
+                        <i class="bi bi-trash"></i> Reiniciar Registros
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
             </div>
             <div class="card-body">
-                {% if atrasos %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Profesor</th>
-                                    <th>Fecha</th>
-                                    <th>Horario Programado</th>
-                                    <th>Horario Real</th>
-                                    <th>Atraso</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for atraso in atrasos %}
-                                <tr>
-                                    <td>{{ atraso.nombre }}</td>
-                                    <td>{{ atraso.fecha }}</td>
-                                    <td>{{ atraso.horario_programado }}</td>
-                                    <td>{{ atraso.horario_real }}</td>
-                                    <td>{{ atraso.atraso }}</td>
-                                    <td>
-                                        <a href="{{ url_for('reporte_profesor', nombre=atraso.nombre) }}" class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye"></i> Ver Detalles
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                {% if profesores_ordenados %}
+                    {% for profesor in profesores_ordenados %}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">{{ profesor }}</h6>
+                                    <div class="text-primary">
+                                        Total: {{ totales_por_profesor[profesor].total }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Horario Programado</th>
+                                                <th>Horario Real</th>
+                                                <th>Atraso</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for atraso in totales_por_profesor[profesor].atrasos %}
+                                            <tr>
+                                                <td>{{ atraso.fecha }}</td>
+                                                <td>{{ atraso.horario_programado }}</td>
+                                                <td>{{ atraso.horario_real }}</td>
+                                                <td>{{ atraso.atraso }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
 
                     <div class="total-box">
                         <div class="row">
                             <div class="col-md-4">
-                                <h6 class="mb-2">Total de Registros</h6>
-                                <h4 class="mb-0">{{ atrasos|length }}</h4>
+                                <h6 class="mb-2">Total de Profesores</h6>
+                                <h4 class="mb-0">{{ profesores_ordenados|length }}</h4>
                             </div>
                             <div class="col-md-8">
-                                <h6 class="mb-2">Total de Atrasos Acumulados</h6>
-                                <h4 class="mb-0">{{ total }}</h4>
+                                <h6 class="mb-2">Total General de Atrasos</h6>
+                                <h4 class="mb-0">{{ total_general }}</h4>
                             </div>
                         </div>
                     </div>
