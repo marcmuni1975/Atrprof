@@ -1,0 +1,5 @@
+Flask==2.3.2
+Werkzeug==3.0.1
+Jinja2==3.1.2
+reportlab==4.0.4  # Para generar PDFs
+python-dotenv==1.0.0
