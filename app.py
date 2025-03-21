@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from datetime import datetime
 import json
 import os
 
 app = Flask(__name__)
+app.secret_key = 'clave_secreta'  # Agregar una clave secreta para usar flash
 
 # Asegurarse de que el directorio data existe
 if not os.path.exists('data'):
@@ -48,9 +49,20 @@ def registrar():
     
     if request.method == 'POST':
         nombre = request.form['nombre']
+        nuevo_nombre = request.form.get('nuevo_nombre', '').strip()
+        
+        # Si seleccionó "nuevo" y proporcionó un nuevo nombre, usar ese
+        if nombre == 'nuevo' and nuevo_nombre:
+            nombre = nuevo_nombre
+            
         horario_programado = request.form['horario_programado']
         horario_real = request.form['horario_real']
         fecha = request.form['fecha']
+
+        # Validar que no esté vacío
+        if not nombre or nombre == 'nuevo':
+            flash('Debe ingresar un nombre válido para el profesor', 'error')
+            return render_template('registrar.html', profesores=profesores)
 
         # Calcular atraso
         h_prog = datetime.strptime(horario_programado, '%H:%M')
@@ -78,6 +90,7 @@ def registrar():
         # Guardar datos
         guardar_datos(profesores, atrasos)
         
+        flash('Atraso registrado correctamente', 'success')
         return redirect(url_for('index'))
 
     return render_template('registrar.html', profesores=profesores)
