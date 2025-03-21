@@ -101,31 +101,31 @@ class AtrasosApp:
                     font=ctk.CTkFont(size=14)).pack(pady=5)
         
         # Combobox para profesores
-        nombre_var = tk.StringVar()
-        nombre_combo = ttk.Combobox(form_frame, textvariable=nombre_var,
+        self.nombre_var = tk.StringVar()
+        self.nombre_combo = ttk.Combobox(form_frame, textvariable=self.nombre_var,
                                   values=list(self.profesores) + ["Nuevo Profesor"])
-        nombre_combo.pack(pady=5)
+        self.nombre_combo.pack(pady=5)
 
         # Campo para nuevo profesor
-        nuevo_profesor_entry = ctk.CTkEntry(form_frame,
+        self.nuevo_profesor_entry = ctk.CTkEntry(form_frame,
                                           font=ctk.CTkFont(size=14))
-        nuevo_profesor_entry.pack(pady=5)
-        nuevo_profesor_entry.pack_forget()
+        self.nuevo_profesor_entry.pack(pady=5)
+        self.nuevo_profesor_entry.pack_forget()
 
         def on_combo_select(event):
-            if nombre_combo.get() == "Nuevo Profesor":
-                nuevo_profesor_entry.pack(pady=5)
+            if self.nombre_combo.get() == "Nuevo Profesor":
+                self.nuevo_profesor_entry.pack(pady=5)
             else:
-                nuevo_profesor_entry.pack_forget()
+                self.nuevo_profesor_entry.pack_forget()
 
-        nombre_combo.bind('<<ComboboxSelected>>', on_combo_select)
+        self.nombre_combo.bind('<<ComboboxSelected>>', on_combo_select)
 
         # Selector de fecha
         ctk.CTkLabel(form_frame, text="Fecha:",
                     font=ctk.CTkFont(size=14)).pack(pady=5)
-        fecha_entry = DateEntry(form_frame, width=20, background='darkblue',
+        self.fecha_entry = DateEntry(form_frame, width=20, background='darkblue',
                               foreground='white', borderwidth=2)
-        fecha_entry.pack(pady=5)
+        self.fecha_entry.pack(pady=5)
 
         # Selectores de hora
         hora_frame = ctk.CTkFrame(form_frame)
@@ -134,12 +134,12 @@ class AtrasosApp:
         # Horario programado
         ctk.CTkLabel(hora_frame, text="Horario Programado:",
                     font=ctk.CTkFont(size=14)).pack(side=tk.LEFT, padx=5)
-        hora_prog = ttk.Spinbox(hora_frame, from_=0, to=23, width=3)
-        hora_prog.pack(side=tk.LEFT)
+        self.horario_programado_entry = ttk.Spinbox(hora_frame, from_=0, to=23, width=3)
+        self.horario_programado_entry.pack(side=tk.LEFT)
         ctk.CTkLabel(hora_frame, text=":",
                     font=ctk.CTkFont(size=14)).pack(side=tk.LEFT)
-        min_prog = ttk.Spinbox(hora_frame, from_=0, to=59, width=3)
-        min_prog.pack(side=tk.LEFT)
+        self.min_programado_entry = ttk.Spinbox(hora_frame, from_=0, to=59, width=3)
+        self.min_programado_entry.pack(side=tk.LEFT)
 
         # Horario real
         hora_real_frame = ctk.CTkFrame(form_frame)
@@ -147,64 +147,83 @@ class AtrasosApp:
         
         ctk.CTkLabel(hora_real_frame, text="Horario Real:",
                     font=ctk.CTkFont(size=14)).pack(side=tk.LEFT, padx=5)
-        hora_real = ttk.Spinbox(hora_real_frame, from_=0, to=23, width=3)
-        hora_real.pack(side=tk.LEFT)
+        self.horario_real_entry = ttk.Spinbox(hora_real_frame, from_=0, to=23, width=3)
+        self.horario_real_entry.pack(side=tk.LEFT)
         ctk.CTkLabel(hora_real_frame, text=":",
                     font=ctk.CTkFont(size=14)).pack(side=tk.LEFT)
-        min_real = ttk.Spinbox(hora_real_frame, from_=0, to=59, width=3)
-        min_real.pack(side=tk.LEFT)
+        self.min_real_entry = ttk.Spinbox(hora_real_frame, from_=0, to=59, width=3)
+        self.min_real_entry.pack(side=tk.LEFT)
 
         # Botón para guardar
         guardar_btn = ctk.CTkButton(
             form_frame,
             text="Guardar",
-            command=lambda: self.guardar_atraso(
-                nuevo_profesor_entry.get() if nombre_combo.get() == "Nuevo Profesor" else nombre_combo.get(),
-                f"{hora_prog.get()}:{min_prog.get()}",
-                f"{hora_real.get()}:{min_real.get()}",
-                fecha_entry.get_date().strftime("%Y-%m-%d"),
-                registrar_window
-            ),
+            command=self.guardar_atraso,
             font=ctk.CTkFont(size=14)
         )
         guardar_btn.pack(pady=20)
 
-    def guardar_atraso(self, nombre, horario_programado, horario_real, fecha, window):
-        # Validar campos
-        if not nombre or not horario_programado or not horario_real or not fecha:
-            messagebox.showerror("Error", "Todos los campos son obligatorios.")
-            return
-
-        # Calcular atraso
+    def guardar_atraso(self):
         try:
-            horario_programado = datetime.strptime(horario_programado, "%H:%M").time()
-            horario_real = datetime.strptime(horario_real, "%H:%M").time()
-            fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
+            # Obtener valores del formulario
+            nombre = self.nombre_var.get()
+            if nombre == "Nuevo Profesor":
+                nombre = self.nuevo_profesor_entry.get().strip()
+                if not nombre:
+                    messagebox.showerror("Error", "Debe ingresar el nombre del nuevo profesor.")
+                    return
+            
+            fecha = self.fecha_entry.get_date().strftime("%Y-%m-%d")
+            horario_programado = f"{self.horario_programado_entry.get()}:{self.min_programado_entry.get()}"
+            horario_real = f"{self.horario_real_entry.get()}:{self.min_real_entry.get()}"
 
-            diferencia = datetime.combine(fecha, horario_real) - datetime.combine(fecha, horario_programado)
+            # Validar que los campos no estén vacíos
+            if not all([nombre, fecha, horario_programado, horario_real]):
+                messagebox.showerror("Error", "Todos los campos son obligatorios.")
+                return
+
+            # Calcular atraso
+            h_prog = datetime.strptime(horario_programado, "%H:%M")
+            h_real = datetime.strptime(horario_real, "%H:%M")
+            diferencia = h_real - h_prog
+
+            # Convertir a horas y minutos
             horas, segundos = divmod(diferencia.seconds, 3600)
             minutos, _ = divmod(segundos, 60)
             atraso = f"{horas}h {minutos}m"
 
-            # Guardar atraso
-            self.atrasos.append({
+            # Crear registro
+            registro = {
                 "nombre": nombre,
+                "fecha": fecha,
                 "horario_programado": horario_programado,
                 "horario_real": horario_real,
-                "fecha": fecha,
                 "atraso": atraso
-            })
+            }
+            self.atrasos.append(registro)
 
             # Agregar profesor si no existe
             if nombre not in self.profesores:
                 self.profesores.add(nombre)
+                # Actualizar combobox
+                self.nombre_var.set("")  # Limpiar selección actual
+                self.nombre_combo['values'] = list(self.profesores) + ["Nuevo Profesor"]
 
             # Actualizar tabla
             self.tree.insert("", tk.END, values=(nombre, fecha, horario_programado, horario_real, atraso))
 
-            # Cerrar ventana
-            window.destroy()
-        except ValueError:
+            # Limpiar campos
+            self.nombre_var.set("")
+            self.nuevo_profesor_entry.delete(0, tk.END)
+            self.nuevo_profesor_entry.pack_forget()  # Ocultar campo de nuevo profesor
+            self.horario_programado_entry.set(0)
+            self.min_programado_entry.set(0)
+            self.horario_real_entry.set(0)
+            self.min_real_entry.set(0)
+
+            messagebox.showinfo("Éxito", "Atraso registrado correctamente.")
+
+        except ValueError as e:
             messagebox.showerror("Error", "Formato de fecha u hora incorrecto.")
 
     def confirmar_reinicio(self):
