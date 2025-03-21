@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Registrar Atraso</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Profesor</label>
+                        {% if profesores %}
+                            <select name="nombre" id="nombre" class="form-select" required>
+                                <option value="">Seleccione un profesor</option>
+                                {% for profesor in profesores %}
+                                    <option value="{{ profesor }}">{{ profesor }}</option>
+                                {% endfor %}
+                                <option value="nuevo">+ Nuevo Profesor</option>
+                            </select>
+                            <input type="text" id="nuevo_nombre" name="nuevo_nombre" class="form-control mt-2" style="display: none;" placeholder="Nombre del nuevo profesor">
+                        {% else %}
+                            <input type="text" name="nombre" class="form-control" required>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" name="fecha" class="form-control" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_programado" class="form-label">Horario Programado</label>
+                            <input type="time" name="horario_programado" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_real" class="form-label">Horario Real</label>
+                            <input type="time" name="horario_real" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.getElementById('nombre').addEventListener('change', function() {
+    var nuevoNombreInput = document.getElementById('nuevo_nombre');
+    if (this.value === 'nuevo') {
+        nuevoNombreInput.style.display = 'block';
+        nuevoNombreInput.required = true;
+    } else {
+        nuevoNombreInput.style.display = 'none';
+        nuevoNombreInput.required = false;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

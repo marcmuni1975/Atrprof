@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Reporte General de Atrasos</h5>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+            <div class="card-body">
+                {% if atrasos %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Profesor</th>
+                                    <th>Fecha</th>
+                                    <th>Horario Programado</th>
+                                    <th>Horario Real</th>
+                                    <th>Atraso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for atraso in atrasos %}
+                                <tr>
+                                    <td>{{ atraso.nombre }}</td>
+                                    <td>{{ atraso.fecha }}</td>
+                                    <td>{{ atraso.horario_programado }}</td>
+                                    <td>{{ atraso.horario_real }}</td>
+                                    <td>{{ atraso.atraso }}</td>
+                                    <td>
+                                        <a href="{{ url_for('reporte_profesor', nombre=atraso.nombre) }}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> Ver Detalles
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="total-box">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6 class="mb-2">Total de Registros</h6>
+                                <h4 class="mb-0">{{ atrasos|length }}</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="mb-2">Total de Atrasos Acumulados</h6>
+                                <h4 class="mb-0">{{ total }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No hay registros de atrasos.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

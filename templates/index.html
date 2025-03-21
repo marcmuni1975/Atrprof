@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Registro de Atrasos</h5>
+                <a href="{{ url_for('registrar') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nuevo Registro
+                </a>
+            </div>
+            <div class="card-body">
+                {% if atrasos %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Profesor</th>
+                                    <th>Fecha</th>
+                                    <th>Horario Programado</th>
+                                    <th>Horario Real</th>
+                                    <th>Atraso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for atraso in atrasos %}
+                                <tr>
+                                    <td>{{ atraso.nombre }}</td>
+                                    <td>{{ atraso.fecha }}</td>
+                                    <td>{{ atraso.horario_programado }}</td>
+                                    <td>{{ atraso.horario_real }}</td>
+                                    <td>{{ atraso.atraso }}</td>
+                                    <td>
+                                        <a href="{{ url_for('reporte_profesor', nombre=atraso.nombre) }}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> Ver Detalles
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No hay registros de atrasos.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
