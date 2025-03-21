@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Primero C</h5>
+                <div>
+                    <a href="{{ url_for('ver_curso', curso='1C') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-eye"></i> Ver Curso
+                    </a>
+                    <a href="{{ url_for('certificados_curso', curso='1C') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-file-earmark-text"></i> Certificados
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h6>Alumnos</h6>
+                        <h3>{{ cursos['1C'].alumnos|length }}</h3>
+                    </div>
+                    <div class="col-4">
+                        <h6>Promedio Curso</h6>
+                        <h3>{{ "%.1f"|format(promedios['1C']) }}</h3>
+                    </div>
+                    <div class="col-4">
+                        <h6>Asignaturas</h6>
+                        <h3>6</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Segundo C</h5>
+                <div>
+                    <a href="{{ url_for('ver_curso', curso='2C') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-eye"></i> Ver Curso
+                    </a>
+                    <a href="{{ url_for('certificados_curso', curso='2C') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-file-earmark-text"></i> Certificados
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h6>Alumnos</h6>
+                        <h3>{{ cursos['2C'].alumnos|length }}</h3>
+                    </div>
+                    <div class="col-4">
+                        <h6>Promedio Curso</h6>
+                        <h3>{{ "%.1f"|format(promedios['2C']) }}</h3>
+                    </div>
+                    <div class="col-4">
+                        <h6>Asignaturas</h6>
+                        <h3>6</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('importar_alumnos') }}" class="btn btn-primary w-100 mb-3">
+                            <i class="bi bi-upload"></i> Importar Alumnos
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('nuevo_alumno') }}" class="btn btn-success w-100 mb-3">
+                            <i class="bi bi-person-plus"></i> Agregar Alumno
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('configuracion') }}" class="btn btn-secondary w-100 mb-3">
+                            <i class="bi bi-gear"></i> Configuración
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

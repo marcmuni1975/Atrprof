@@ -1,0 +1,75 @@
+{
+    "cursos": {
+        "1C": {
+            "nombre": "Primero C",
+            "alumnos": [
+                {
+                    "id": "1C_001",
+                    "nombre": "Nombre Apellido",
+                    "notas": {
+                        "Lenguaje": {
+                            "notas": [6.5, 7.0, 5.5],
+                            "promedio": 6.3
+                        },
+                        "Matematicas": {
+                            "notas": [5.5, 6.0],
+                            "promedio": 5.8
+                        },
+                        "Ingles": {
+                            "notas": [7.0, 6.5, 6.0, 5.5],
+                            "promedio": 6.3
+                        },
+                        "Cs_Naturales": {
+                            "notas": [6.0, 5.5],
+                            "promedio": 5.8
+                        },
+                        "Cs_Sociales": {
+                            "notas": [6.5, 7.0],
+                            "promedio": 6.8
+                        },
+                        "Instrumental": {
+                            "notas": [7.0, 6.5],
+                            "promedio": 6.8
+                        }
+                    },
+                    "promedio_general": 6.3
+                }
+            ]
+        },
+        "2C": {
+            "nombre": "Segundo C",
+            "alumnos": []
+        }
+    },
+    "asignaturas": {
+        "Lenguaje": {
+            "nombre_completo": "Lenguaje y Comunicación",
+            "max_notas": 7
+        },
+        "Matematicas": {
+            "nombre_completo": "Matemáticas",
+            "max_notas": 7
+        },
+        "Ingles": {
+            "nombre_completo": "Inglés",
+            "max_notas": 7
+        },
+        "Cs_Naturales": {
+            "nombre_completo": "Ciencias Naturales",
+            "max_notas": 7
+        },
+        "Cs_Sociales": {
+            "nombre_completo": "Ciencias Sociales",
+            "max_notas": 7
+        },
+        "Instrumental": {
+            "nombre_completo": "Instrumental",
+            "max_notas": 7
+        }
+    },
+    "configuracion": {
+        "nombre_establecimiento": "CEIA Amigos del Padre Hurtado",
+        "jefe_utp": "Nombre del Jefe UTP",
+        "año_escolar": "2025"
+    }
+}
